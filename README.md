@@ -2,7 +2,7 @@
 
 Demo baseada em microserviços quarkus para demonstrar como monitorar esse tipo de tecnologia com Dynatrace
 
-![Architecture](https://raw.githubusercontent.com/aborigene/quarkus-otel-dynatrace/master/images/arquitetura.png)
+![Architecture](https://github.com/aborigene/quarkus-otel-dynatrace/blob/main/images/arquitetura.jpeg)
 
 ## Explicando a aplicação
 
