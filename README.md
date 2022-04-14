@@ -22,6 +22,7 @@ Esta é uma aplicação muito simples baseada nos exemplos de quickstart do quar
 ```
 cd <repo_hom>/src/rest-client-quickstart
 docker build . -t <docker hub repo>/rest-client-quickstart:v0.1
+docker push <docker hub repo>/rest-client-quickstart:v0.1
 ```
 
 2. Build do rest-json
@@ -31,6 +32,7 @@ Esta é uma aplicação muito simples baseada nos exemplos de quickstart do quar
 ```
 cd <repo_hom>/src/rest-json-quickstart
 docker build . -t <docker hub repo>/rest-json-quickstart:v0.1
+docker push <docker hub repo>/rest-json-quickstart:v0.1
 ```
 
 3. Configurar coletor OpenTelemetry
@@ -119,6 +121,10 @@ O serviço principal está exposto vai LoadBalancer, basta então mandar uma req
 ```
 curl http://<ip_real>:8086/extension/id/io.quarkus:quarkus-rest-client
 ```
+
+5. Outros cenários
+
+Para testar outros cenários basta setar a variável NATIVE em cada deploy. Esta variável já está setada no serviço client, e não está setada no outro serviço. Basta setar essa variável com qualquer valor para mudar de java para native.
 
 ### Tendo problemas ou dificuldades ou encontrou um bug?
 
