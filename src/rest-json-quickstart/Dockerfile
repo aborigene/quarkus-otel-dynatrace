@@ -8,8 +8,8 @@ RUN mv target target_java
 
 #building native
 FROM quay.io/quarkus/ubi-quarkus-native-image:22.0-java11 AS BUILD_NATIVE
-ENV MAVEN_OPTS="-Xmx6000m"
-ENV JAVA_OPTS="-Xmx6000m"
+#ENV MAVEN_OPTS="-Xmx6000m"
+#ENV JAVA_OPTS="-Xmx6000m"
 COPY --chown=quarkus:quarkus mvnw /code/mvnw
 COPY --chown=quarkus:quarkus .mvn /code/.mvn
 COPY --chown=quarkus:quarkus pom.xml /code/

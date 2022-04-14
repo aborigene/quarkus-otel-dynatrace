@@ -13,9 +13,27 @@ A aplicação em si é bastante simples compostas de uma API rest que recebe car
 
 ## Executar a Demo
 
-Essa demo deve ser executada em um Kubernetes, ela pode ser executada em outros ambientes mas os artefatos de configuração terão que ser gerados. Os arquivos neste repo são para deploy em Kubernetes.
+Essa demo deve ser executada em um Kubernetes, ela pode ser executada em outros ambientes mas os artefatos de configuração terão que ser gerados. Os arquivos neste repo são para deploy em Kubernetes. A demo pode ser executada de duas formas: usando as imagens pré-construíadas e apenas fazendo o deploy da aplicação ou fazendo o build completo. Se você preferir usar as imagens pré-construídas, vá para o passo X, caso contrário comece o laboratório à partir do passo 1 abaixo.
 
-1. Configurar coletor OpenTelemetry
+1. Build do rest-client
+
+Esta é uma aplicação muito simples baseada nos exemplos de quickstart do quarkus e alterada para atender esse laboratório. Para fazer o build vc precisa de um ambiente docker rodando e executar os comandos abaixo:
+
+```
+cd <repo_hom>/src/rest-client-quickstart
+docker build . -t <docker hub repo>/rest-client-quickstart:v0.1
+```
+
+2. Build do rest-json
+
+Esta é uma aplicação muito simples baseada nos exemplos de quickstart do quarkus e alterada para atender esse laboratório. Para fazer o build vc precisa de um ambiente docker rodando e executar os comandos abaixo:
+
+```
+cd <repo_hom>/src/rest-json-quickstart
+docker build . -t <docker hub repo>/rest-json-quickstart:v0.1
+```
+
+3. Configurar coletor OpenTelemetry
 
 Aqui temos duas opções: instalar um coletor ou usar um coletor já existente no cluster, escolher uma das opções 1.1 ou 1.2 abaixo:
 
@@ -50,7 +68,41 @@ data:
   OTEL_ENDPOINT_URL: grpc://<nome do serviço>.<nome do namespace>:<porta>
 ```
 
-2. Subir os serviços
+3. Subir os serviços
+
+Aqui é importante que se você construiu as imagens, que você altere os arquivos de deploy para apontar para as imagens que foram construídas:
+
+Editar o arquivo:
+
+```
+vim <repo_home>/kubernetes/quarkus/rest-client-quickstart/rest-client-quickstart.yaml
+```
+
+Alterar a linha da imagem para apontar para a imagem criada:
+
+```
+    spec:
+      containers:
+        - name: rest-client-quickstart
+          image: <docker hub repo>/rest-client-quickstart:v0.1
+```
+
+Em seguida fazer o mesmo para o outro serviço:
+
+```
+vim <repo_home>/kubernetes/quarkus/rest-client-quickstart/rest-json-quickstart.yaml
+```
+
+Alterar a linha da imagem para apontar para a imagem criada:
+
+```
+    spec:
+      containers:
+        - name: rest-client-quickstart
+          image: <docker hub repo>/rest-json-quickstart:v0.1
+```
+
+Em seguida executar o deploy:
 
 ```
   cd <repo_home>/kubernetes/quarkus
@@ -58,7 +110,7 @@ data:
   kubectl apply -f rest-json-quickstart/rest-json-quickstart.yaml # isso irá subir o segundo serviço no namespace default, não trocar o namespace aqui
 ```
 
-3. Resumo do ambiente
+4. Resumo do ambiente
 
 Aqui você terá o primeiro serviço monitorado puramente com OpenTelemetry já que é um serviço nativo e o segundo sendo monitorado com o OneAgent, já que é um serviço Java.
 
