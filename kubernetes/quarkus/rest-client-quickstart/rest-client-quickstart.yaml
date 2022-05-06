@@ -13,9 +13,9 @@ metadata:
   name: app_properties
 data:
     application.properties: |
-    quarkus.tls.trust-all=true
-    quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
-    quarkus.http.port=8086
+      quarkus.tls.trust-all=true
+      quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
+      quarkus.http.port=8086
 
 ---
 apiVersion: v1
