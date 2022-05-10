@@ -2,9 +2,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rest-client-quickstart-config
+  name: app-properties
 data:
-  OTEL_ENDPOINT_URL: grpc://otel-collector.otel:4317
+    application.properties: |
+      quarkus.tls.trust-all=true
+      quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
+      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://otel-collector.otel:4317
+      quarkus.http.port=8086
 
 ---
 apiVersion: v1
@@ -56,3 +60,10 @@ spec:
             - name: http
               containerPort: 8086
               protocol: TCP
+          volumeMounts:
+            - mountPath: /work/config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: app-properties
