@@ -1,10 +1,10 @@
 #building java
-FROM adoptopenjdk/maven-openjdk11 as BUILD
-COPY src /usr/src/app/src
-COPY ./pom.xml /usr/src/app
-WORKDIR /usr/src/app
-RUN mvn package
-RUN mv target target_java
+#FROM adoptopenjdk/maven-openjdk11 as BUILD
+#COPY src /usr/src/app/src
+#COPY ./pom.xml /usr/src/app
+#WORKDIR /usr/src/app
+#RUN mvn package -DskipTests
+#RUN mv target target_java
 
 #building native
 FROM quay.io/quarkus/ubi-quarkus-native-image:22.0-java11 AS BUILD_NATIVE
@@ -15,17 +15,18 @@ USER quarkus
 WORKDIR /code
 RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
 COPY src /code/src
-RUN ./mvnw package -Pnative
+RUN ./mvnw package -DskipTests -Pnative
 
 #FROM quay.io/quarkus/quarkus-micro-image:1.0
-FROM openjdk:11.0.13-jdk
-WORKDIR /work/
+#FROM openjdk:11.0.13-jdk
+#WORKDIR /work/
 #copying java
-COPY --from=BUILD --chown=1001 /usr/src/app/target_java/quarkus-app/ /work/
-RUN mv quarkus-run.jar application.jar
+#COPY --from=BUILD --chown=1001 /usr/src/app/target_java/quarkus-app/ /work/
+#RUN mv quarkus-run.jar application.jar
 
 #copying native
-COPY --from=BUILD_NATIVE /code/target/*-runner /work/application
+#COPY --from=BUILD_NATIVE /code/target/*-runner /work/application
+COPY /code/target/*-runner /work/application
 RUN mkdir /work/config
 
 #copying startup.sh

@@ -10,7 +10,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app_properties
+  name: app-properties
 data:
     application.properties: |
       quarkus.tls.trust-all=true
