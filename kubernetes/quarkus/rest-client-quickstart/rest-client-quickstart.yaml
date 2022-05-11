@@ -53,9 +53,6 @@ spec:
         - name: rest-client-quickstart
           image: igoroschsimoes/rest-client-quickstart:v0.5
           resources: {}
-          envFrom:
-            - configMapRef:
-                name: rest-client-quickstart-config
           ports:
             - name: http
               containerPort: 8086
