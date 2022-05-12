@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 if [ ! -z "$NATIVE" ]; then
 	./application -Dquarkus.http.host=0.0.0.0
 else

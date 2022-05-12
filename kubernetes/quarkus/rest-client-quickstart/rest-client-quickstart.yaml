@@ -60,6 +60,7 @@ spec:
       containers:
         - name: rest-client-quickstart
           image: igoroschsimoes/rest-client-quickstart:rc1
+          imagePullPolicy: Always
           resources: {}
           envFrom:
             - configMapRef:
@@ -74,4 +75,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: app_properties
+            name: app-properties
