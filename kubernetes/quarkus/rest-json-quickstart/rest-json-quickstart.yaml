@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
         - name: rest-json-quickstart
-          image: igoroschsimoes/rest-json-quickstart:build-v0.1
+          image: igoroschsimoes/rest-json-quickstart:rc1
           resources: {}
           envFrom:
             - configMapRef:

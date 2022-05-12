@@ -8,18 +8,16 @@ RUN mv target target_java
 
 #building native
 FROM quay.io/quarkus/ubi-quarkus-native-image:22.0-java11 AS BUILD_NATIVE
-#ENV MAVEN_OPTS="-Xmx6000m"
-#ENV JAVA_OPTS="-Xmx6000m"
 COPY --chown=quarkus:quarkus mvnw /code/mvnw
 COPY --chown=quarkus:quarkus .mvn /code/.mvn
 COPY --chown=quarkus:quarkus pom.xml /code/
 USER quarkus
 WORKDIR /code
-RUN chmod +x mvnw
-RUN ls -l
 RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
 COPY src /code/src
-RUN ./mvnw package -X -Pnative -DskipTests
+RUN ./mvnw package -X -Pnative -DskipTests -Dmaven.test.skip=true
+
+# dasda
 
 #FROM quay.io/quarkus/quarkus-micro-image:1.0
 FROM openjdk:11.0.13-jdk
