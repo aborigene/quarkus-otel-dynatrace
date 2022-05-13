@@ -2,10 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rest-json-quickstart-config
+  name: app-properties
 data:
-  OTEL_ENDPOINT_URL: grpc://otel-collector.otel:4317
-
+    application.properties: |
+      quarkus.tls.trust-all=true
+      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://opentel-collector.otel:4317
+      quarkus.http.port=8087
 ---
 apiVersion: v1
 kind: Service

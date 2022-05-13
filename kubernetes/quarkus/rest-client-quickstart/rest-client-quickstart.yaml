@@ -14,7 +14,7 @@ data:
     application.properties: |
       quarkus.tls.trust-all=true
       quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
-      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://openzxtel-collector.otel:4317
+      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://opentel-collector.otel:4317
       quarkus.http.port=8086
 
 ---
