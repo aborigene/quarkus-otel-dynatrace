@@ -9,12 +9,12 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-properties
+  name: client-properties
 data:
     application.properties: |
       quarkus.tls.trust-all=true
       quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
-      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://opentel-collector.otel:4317
+      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://otel-collector.otel:4317
       quarkus.http.port=8086
 
 ---
@@ -74,4 +74,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: app-properties
+            name: client-properties
