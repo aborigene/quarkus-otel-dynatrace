@@ -54,7 +54,7 @@ Editar o arquivo:
 
   <repo_home>/kubernetes/quarkus/rest-client-quickstart/rest-client-quickstart.yaml
 
-Alterar o início do arquivo conforme abaixo:
+Alterar o início do arquivo conforme abaixo (alterando com os dados do serviço do collector definido na etapa de pre requisitos):
 
 ```
 ---
