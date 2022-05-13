@@ -6,14 +6,27 @@ Demo baseada em microserviços quarkus para demonstrar como monitorar esse tipo 
 
 ## Explicando a aplicação
 
-A aplicação em si é bastante simples compostas de uma API rest que recebe carga de um load generator e envia requests a uma segunda API rest
+A aplicação em si é bastante simples compostas de uma API rest que recebe requisições e envia requests a uma segunda API rest
 
 1. Rest Client
 2. Rest JSON
 
+## Pre Requisitos
+
+Essa demo depende de OpenTelemetry e no Quarkus atualmemte somente está suportado o protocolo GRPC, sendo assim, para enviar os traces ao Dynatrace, é mandatória a presença de um collector OpenTelemetry dentro do Kubernetes. Se você já tem um collector rodando, siga a demo normalmente a partir do item "Executar a Demo", se você ainda não tem siga o passos abaixo:
+
+- Entrar no Dynatrace e gerar um token para a ingestão de traces OpenTelemetry
+- Em seguida executar os comandos abaixo, ajustando os parâmetros ao dados do seu ambiente Dynatrace:
+```
+  cd <repo_home>/kubernetes/opentelemetry
+  kubectl create ns otel
+  kubectl -n otel create secret generic otel-collector-secret --from-literal "OTEL_ENDPOINT_URL=<TENANT-BASEURL>/api/v2/otlp" --from-literal "OTEL_AUTH_HEADER=Api-Token <API-TOKEN>" #preencher com os dados do seu ambiente e o token gerado anteriormente
+  kubectl -n otel apply -f opentelemetry.yaml
+``` 
+
 ## Executar a Demo
 
-Essa demo deve ser executada em um Kubernetes, ela pode ser executada em outros ambientes mas os artefatos de configuração terão que ser gerados. Os arquivos neste repo são para deploy em Kubernetes. A demo pode ser executada de duas formas: usando as imagens pré-construíadas e apenas fazendo o deploy da aplicação ou fazendo o build completo. Se você preferir usar as imagens pré-construídas, vá para o passo X, caso contrário comece o laboratório à partir do passo 1 abaixo.
+Essa demo deve ser executada em um Kubernetes, ela pode ser executada em outros ambientes mas os artefatos de configuração terão que ser adaptados para isso. Os arquivos neste repo são para deploy apenas em Kubernetes. A demo pode ser executada de duas formas: usando as imagens pré-construíadas e apenas fazendo o deploy da aplicação ou fazendo o build completo. Se você preferir usar as imagens pré-construídas, vá para o passo X, caso contrário comece o laboratório à partir do passo 1 abaixo.
 
 1. Build do rest-client
 
@@ -35,24 +48,7 @@ docker build . -t <docker hub repo>/rest-json-quickstart:v0.1
 docker push <docker hub repo>/rest-json-quickstart:v0.1
 ```
 
-3. Configurar coletor OpenTelemetry
-
-Aqui temos duas opções: instalar um coletor ou usar um coletor já existente no cluster, escolher uma das opções 1.1 ou 1.2 abaixo:
-
-  1. Instalar um coletor:
-
-Entrar no Dynatrace e gerar um token para a ingestão de traces OpenTelemetry
-
-Em seguida executar os comandos abaixo:
-
-```
-  cd <repo_home>/kubernetes/opentelemetry
-  kubectl create ns otel
-  kubectl -n otel create secret generic otel-collector-secret --from-literal "OTEL_ENDPOINT_URL=<TENANT-BASEURL>/api/v2/otlp" --from-literal "OTEL_AUTH_HEADER=Api-Token <API-TOKEN>" #preencher com os dados do seu ambiente e o token gerado anteriormente
-  kubectl -n otel apply -f opentelemetry.yaml
-```
-
-  2. Já possui um collector
+2. Configurar o envio de spans para o collector
 
 Editar o arquivo:
 
@@ -65,9 +61,13 @@ Alterar o início do arquivo conforme abaixo:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rest-client-quickstart-config
+  name: app-properties
 data:
-  OTEL_ENDPOINT_URL: grpc://<nome do serviço>.<nome do namespace>:<porta>
+    application.properties: |
+      quarkus.tls.trust-all=true
+      quarkus.rest-client."org.acme.rest.client.ExtensionsService".url=http://rest-json-quickstart.default:8087/
+      quarkus.opentelemetry.tracer.exporter.otlp.endpoint=http://<servico collector>.<namespace>:4317
+      quarkus.http.port=8086
 ```
 
 3. Subir os serviços
@@ -116,15 +116,13 @@ Em seguida executar o deploy:
 
 Aqui você terá o primeiro serviço monitorado puramente com OpenTelemetry já que é um serviço nativo e o segundo sendo monitorado com o OneAgent, já que é um serviço Java.
 
-O serviço principal está exposto vai LoadBalancer, basta então mandar uma requisição à api exposta conforme abaixo:
+O serviço principal está exposto via LoadBalancer, basta então mandar uma requisição à api exposta conforme abaixo:
 
 ```
 curl http://<ip_real>:8086/extension/id/io.quarkus:quarkus-rest-client
 ```
 
-5. Outros cenários
-
-Para testar outros cenários basta setar a variável NATIVE em cada deploy. Esta variável já está setada no serviço client, e não está setada no outro serviço. Basta setar essa variável com qualquer valor para mudar de java para native.
+O comando acima pode ser executado usando o IP interno, desde que as chamadas ao API possam alcançar esse endereço.
 
 ### Tendo problemas ou dificuldades ou encontrou um bug?
 
