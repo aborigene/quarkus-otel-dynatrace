@@ -29,7 +29,7 @@ Em seguida executar os comandos abaixo:
   cd <repo_home>/kubernetes/opentelemetry
   kubectl create ns otel
   kubectl -n otel create secret generic otel-collector-secret --from-literal "OTEL_ENDPOINT_URL=<TENANT-BASEURL>/api/v2/otlp" --from-literal "OTEL_AUTH_HEADER=Api-Token <API-TOKEN>" #preencher com os dados do seu ambiente e o token gerado anteriormente
-  kubectl -n otel apply -f opentelemetry.yaml
+  kubectl -n otel apply -f opentelemetry-collector.yaml
 ```
 
   2. Já possui um collector
