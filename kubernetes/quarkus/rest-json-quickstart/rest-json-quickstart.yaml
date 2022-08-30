@@ -5,7 +5,7 @@ metadata:
   name: rest-json-quickstart-config
 data:
   OTEL_ENDPOINT_URL: grpc://otel-collector.otel:4317
-  NATIVE: 0
+  NATIVE: "0"
 
 ---
 apiVersion: v1
